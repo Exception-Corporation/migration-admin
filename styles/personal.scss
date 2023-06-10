@@ -1,0 +1,83 @@
+.img-reduce {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: cover !important;
+  margin-right: 15px !important;
+}
+
+.title-welcome {
+  font-weight: 600;
+}
+
+.sign-hov:hover {
+  background-color: rgba(0, 0, 0, 0.073);
+  transition: 1s;
+  cursor: pointer;
+}
+
+.sign-hov {
+  transition: 1s;
+}
+
+.overflow-x-scroll {
+  max-height: 500px;
+  max-width: 100%;
+}
+
+.ReactModal__Content {
+  max-width: 80%;
+  max-height: 80%;
+  padding-left: 100px !important;
+  padding-right: 100px !important;
+}
+
+.register-h1 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.img-table {
+  height: 18px !important;
+}
+
+.config-title {
+  text-shadow: 1px 0px 1px rgb(154, 154, 154);
+}
+
+.td-hover-folder {
+  transition: 0.3s;
+}
+
+.td-hover-folder:hover {
+  background-color: rgb(225, 225, 225);
+}
+
+@media (min-width: 777px) {
+  .modal-input {
+    min-width: 400px !important;
+  }
+}
+
+@media (max-width: 450px) {
+  .ReactModal__Content {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+.rti--tag-to {
+  align-items: center;
+  background: #edf2f7;
+  border-radius: 5px;
+  display: inline-flex;
+  justify-content: center;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-right: 10px;
+}
+
+.mt--sb {
+  margin-top: -3px;
+}
