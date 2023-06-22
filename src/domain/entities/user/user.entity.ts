@@ -7,7 +7,7 @@ export class User {
     public phone: string,
     public email: string,
     public age: number,
-    public role: string,
+    public role: 'root' | 'visitor' | 'standard',
     public password: string,
     public active: boolean,
     public createdAt: string,

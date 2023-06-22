@@ -62,7 +62,7 @@ const CitaForm = ({
   const formik = useFormik({
     initialValues: {
       status: cita?.status || 'pending',
-      confirm: cita?.confirm || '',
+      confirm: cita?.confirm || undefined,
       name: cita?.name || '',
       email: cita?.email || '',
       phoneNumber: cita?.phoneNumber || '',

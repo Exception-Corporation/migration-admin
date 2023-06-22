@@ -47,26 +47,31 @@ const Sidebar = () => {
             </a>
           </Link>
         </li>
-        <li
-          className={router.pathname == '/content' ? 'bg-blue-800 p-2' : 'p-2'}
-        >
-          <Link href="/content">
-            <a className="flex text-white">
-              <svg
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                className="w-4 h-4"
-              >
-                <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-              </svg>
-              <p className="ml-1 mt--sb">Mis citas/demandas</p>
-            </a>
-          </Link>
-        </li>
+        {auth?.role! !== 'visitor' ? (
+          <li
+            className={
+              router.pathname == '/content' ? 'bg-blue-800 p-2' : 'p-2'
+            }
+          >
+            <Link href="/content">
+              <a className="flex text-white">
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4"
+                >
+                  <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <p className="ml-1 mt--sb">Mis citas/demandas</p>
+              </a>
+            </Link>
+          </li>
+        ) : null}
+
         {auth?.role == 'root' ? (
           <li
             className={router.pathname === '/users' ? 'bg-blue-800 p-2' : 'p-2'}

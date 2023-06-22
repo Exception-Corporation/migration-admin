@@ -5,6 +5,7 @@ import { Cita } from '@/domain/entities/cita/cita.entity';
 import { getToken } from '@/infrastructure/utils/token';
 import { CitaResponse } from '@/data/use-cases/citas/types/response.type';
 import { StatusEnum, TypeEnum } from '@/domain/entities/cita/cita.entity';
+import { HistoryCita } from '@/domain/entities/cita/history.cita.entity';
 
 export class CitaApi {
   private static request =
@@ -72,10 +73,15 @@ export class CitaApi {
   static async getAll(
     page: number,
     pageSize: number,
-    searchBy: string
+    searchBy: string,
+    userId?: number
   ): Promise<CitaResponse> {
     const data: any = await this.request.loadAll(
-      `${this.url}/form/getAll?pageSize=${pageSize}&page=${page}&searchBy=${searchBy}`,
+      `${
+        this.url
+      }/form/getAll?pageSize=${pageSize}&page=${page}&searchBy=${searchBy}${
+        userId ? `&userId=${userId}` : ''
+      }`,
       'GET',
       {
         'Content-Type': 'application/json',
@@ -114,14 +120,14 @@ export class CitaApi {
       id: number;
       userId?: number;
       confirm?: string;
-      status: StatusEnum;
-      name: string;
-      email: string;
-      phoneNumber: string;
-      reason: string;
-      startDate: string;
-      endDate: string;
-      type: TypeEnum;
+      status?: StatusEnum;
+      name?: string;
+      email?: string;
+      phoneNumber?: string;
+      reason?: string;
+      startDate?: string;
+      endDate?: string;
+      type?: TypeEnum;
     },
     author: string,
     token?: string
@@ -163,5 +169,19 @@ export class CitaApi {
     );
 
     return form;
+  }
+
+  static async getHistoryById(id: number): Promise<HistoryCita[]> {
+    const { historyForm } = (await this.request.loadAll(
+      `${this.url}/historyForm/getOne/${id}`,
+      'GET',
+      {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      {}
+    )) as any;
+
+    return historyForm;
   }
 }
