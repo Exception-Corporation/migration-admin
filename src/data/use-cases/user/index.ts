@@ -32,7 +32,9 @@ export class UserApi {
       `${this.url}/missing/password/${email}`,
       'POST',
       { 'Content-Type': 'application/json' },
-      { url: `${config.api.files.url.replace(':8000', '')}/recover-password` }
+      {
+        url: `${config.hostname}/recover-password`
+      }
     );
 
     return Boolean(success);

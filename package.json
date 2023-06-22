@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "jwt-decode": "^3.1.2",
     "next": "12.3.1",
     "react": "18.2.0",
+    "react-datepicker": "^4.14.1",
     "react-dom": "18.2.0",
     "react-modal": "^3.16.1",
     "react-tag-input-component": "^2.0.2",
@@ -31,6 +32,7 @@
     "@types/jwt-decode": "^3.1.0",
     "@types/node": "18.11.0",
     "@types/react": "18.0.21",
+    "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "18.0.6",
     "@types/react-modal": "^3.13.1",
     "@types/redux-logger": "^3.0.9",

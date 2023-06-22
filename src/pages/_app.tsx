@@ -21,6 +21,7 @@ import NewAccount from '@/pages//new-account';
 import Home from '@/pages';
 import Loading from '@/presentation/components/Loading';
 import RecoverPassword from '@/pages/recover-password';
+import SeoHead from '@/presentation/components/SeoHead';
 
 function MyApp({ Component, pageProps }: AppProps) {
   // routing
@@ -89,6 +90,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <SeoHead />
       <AuthContext.Provider value={authData}>
         {auth == undefined || auth == null ? (
           verifyAuth(false) ? (
