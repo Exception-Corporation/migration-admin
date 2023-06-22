@@ -165,7 +165,7 @@ const Home: NextPage = () => {
           <></>
         )}
 
-        <div className="overflow-x-scroll">
+        <div className="overflow-scroll" style={{ height: 700 }}>
           <form>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -176,6 +176,25 @@ const Home: NextPage = () => {
               autoComplete="off"
             />
           </form>
+          <div className="div-paginator float-right">
+            <ul className="pagination">
+              <li onClick={() => incrementPage(page - 1)}>
+                <a>«</a>
+              </li>
+              {GlobalFunctions.numberToArray(totalPages).map(
+                (_cpage, index) => (
+                  <li key={index} onClick={() => incrementPage(index + 1)}>
+                    <a className={index + 1 == page ? 'active' : ''}>
+                      {index + 1}
+                    </a>
+                  </li>
+                )
+              )}
+              <li onClick={() => incrementPage(page + 1)}>
+                <a>»</a>
+              </li>
+            </ul>
+          </div>
           <table className="table-auto shadow-md mt-10 w-full w-lg">
             <thead className="bg-gray-800">
               <tr className="text-white">
@@ -201,21 +220,6 @@ const Home: NextPage = () => {
               ))}
             </tbody>
           </table>
-        </div>
-        <div className="div-paginator">
-          <ul className="pagination">
-            <li onClick={() => incrementPage(page - 1)}>
-              <a>«</a>
-            </li>
-            {GlobalFunctions.numberToArray(totalPages).map((_cpage, index) => (
-              <li key={index} onClick={() => incrementPage(index + 1)}>
-                <a className={index + 1 == page ? 'active' : ''}>{index + 1}</a>
-              </li>
-            ))}
-            <li onClick={() => incrementPage(page + 1)}>
-              <a>»</a>
-            </li>
-          </ul>
         </div>
       </Layout>
 

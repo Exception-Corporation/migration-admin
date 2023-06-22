@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { Transition } from '@headlessui/react';
 import { Cita } from '@/domain/entities/cita/cita.entity';
 import { toast } from 'react-toastify';
 import { CitaApi } from '@/data/use-cases/citas';
@@ -24,6 +25,7 @@ export default function CitaTable({
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [detailIsOpen, setDetailOpen] = useState<boolean>(false);
   const [history, setHistory] = useState<HistoryCita[]>([]);
+  const [showActions, setShowActions] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -155,7 +157,7 @@ export default function CitaTable({
   };
 
   return (
-    <tr>
+    <tr className="border-green-600	">
       <td
         className="border px-4 py-2 text-left cursor-pointer"
         onClick={openDetail}
@@ -199,93 +201,13 @@ export default function CitaTable({
         {GlobalFunctions.localDate(cita.updatedAt)}
       </td>
       <td className="border px-4 py-2">
-        {auth!.role !== 'visitor' ? (
-          <>
-            <button
-              type="button"
-              className="flex justify-center items-center bg-red-800 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-              onClick={() => confirmDeleteAction()}
-            >
-              Eliminar
-              <svg
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                className="w-4 h-4 ml-2"
-              >
-                <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </button>
-            {owner ? (
-              <>
-                <button
-                  type="button"
-                  className="mt-2 flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                  onClick={openModal}
-                >
-                  Actualizar
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    className="w-4 h-4 ml-2"
-                  >
-                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="mt-2 flex justify-center items-center bg-blue-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                  onClick={remove}
-                >
-                  Desasignar
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    className="w-4 h-4 ml-2"
-                  >
-                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                className="mt-2 flex justify-center items-center bg-blue-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                onClick={takeRecord}
-              >
-                Tomar
-                <svg
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 ml-2"
-                >
-                  <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-              </button>
-            )}
-          </>
-        ) : (
+        <div className="relative">
           <button
             type="button"
-            className="mt-2 flex justify-center items-center bg-blue-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-            onClick={openDetail}
+            className="flex justify-center items-center bg-blue-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+            onClick={() => setShowActions(!showActions)}
           >
-            Detalles
+            Acciones
             <svg
               fill="none"
               stroke="currentColor"
@@ -298,9 +220,131 @@ export default function CitaTable({
               <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
             </svg>
           </button>
-        )}
+          <Transition
+            show={showActions}
+            enter="transition-opacity duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+            className="absolute z-10 right-0 mt-2 w-48 bg-white rounded shadow-lg"
+          >
+            <ul className="py-2">
+              {auth!.role !== 'visitor' ? (
+                <>
+                  <li>
+                    <button
+                      type="button"
+                      className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-red-800 hover:bg-red-100"
+                      onClick={() => confirmDeleteAction()}
+                    >
+                      <span className="mr-2">Eliminar</span>
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        className="w-4 h-4"
+                      >
+                        <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </button>
+                  </li>
+                  {owner ? (
+                    <>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-green-600 hover:bg-green-100"
+                          onClick={openModal}
+                        >
+                          <span className="mr-2">Actualizar</span>
+                          <svg
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            className="w-4 h-4"
+                          >
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                          </svg>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
+                          onClick={remove}
+                        >
+                          <span className="mr-2">Desasignar</span>
+                          <svg
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            className="w-4 h-4"
+                          >
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                          </svg>
+                        </button>
+                      </li>
+                    </>
+                  ) : (
+                    <li>
+                      <button
+                        type="button"
+                        className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
+                        onClick={takeRecord}
+                      >
+                        <span className="mr-2">Tomar</span>
+                        <svg
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          className="w-4 h-4"
+                        >
+                          <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                      </button>
+                    </li>
+                  )}
+                </>
+              ) : (
+                <li>
+                  <button
+                    type="button"
+                    className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
+                    onClick={openDetail}
+                  >
+                    <span className="mr-2">Detalles</span>
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4"
+                    >
+                      <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                </li>
+              )}
+            </ul>
+          </Transition>
+        </div>
       </td>
-
       <CitaUpdated
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
