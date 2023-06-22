@@ -4,6 +4,7 @@ import { User } from '@/domain/entities/user/user.entity';
 import { toast } from 'react-toastify';
 import { UserApi } from '@/data/use-cases/user';
 import UserUpdate from '@/presentation/components/modals/user-form';
+import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
 export default function UserTable({
   user,
@@ -78,10 +79,10 @@ export default function UserTable({
       <td className="border px-4 py-2">{user.phone}</td>
       <td className="border px-4 py-2">{user.role}</td>
       <td className="border px-4 py-2">
-        {new Date(user.createdAt).toString()}
+        {GlobalFunctions.localDate(user.createdAt)}
       </td>
       <td className="border px-4 py-2">
-        {new Date(user.updatedAt).toString()}
+        {GlobalFunctions.localDate(user.updatedAt)}
       </td>
       <td className="border px-4 py-2">
         <button

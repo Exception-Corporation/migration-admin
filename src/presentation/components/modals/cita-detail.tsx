@@ -2,6 +2,7 @@ import Modal from 'react-modal';
 import modalConfig from '@/presentation/components/modal';
 import { Cita } from '@/domain/entities/cita/cita.entity';
 import { HistoryCita } from '@/domain/entities/cita/history.cita.entity';
+import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
 const CitaDetail = ({
   modalIsOpen,
@@ -14,13 +15,19 @@ const CitaDetail = ({
   cita: Cita;
   historyCita: HistoryCita[];
 }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+  const EnumProperties: any = {
+    userId: 'Usuario',
+    confirm: 'Confirmada',
+    status: 'Estatus',
+    name: 'Nombre',
+    email: 'Correo',
+    phoneNumber: 'Teléfono',
+    reason: 'Razón',
+    startDate: 'Fecha inicial',
+    endDate: 'Fecha final',
+    type: 'Tipo',
+    createdAt: 'Creado',
+    updatedAt: 'Actualizado'
   };
 
   return (
@@ -46,22 +53,22 @@ const CitaDetail = ({
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Fecha de inicio:</span>{' '}
-              {formatDate(cita.startDate)}
+              {GlobalFunctions.localDate(cita.startDate)}
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Fecha de fin:</span>{' '}
-              {formatDate(cita.endDate)}
+              {GlobalFunctions.localDate(cita.endDate)}
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Tipo:</span> {cita.type}
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Creado el:</span>{' '}
-              {formatDate(cita.createdAt)}
+              {GlobalFunctions.localDate(cita.createdAt)}
             </p>
             <p className="text-gray-700">
               <span className="font-bold">Actualizado el:</span>{' '}
-              {formatDate(cita.updatedAt)}
+              {GlobalFunctions.localDate(cita.updatedAt)}
             </p>
           </div>
         </div>
@@ -74,20 +81,39 @@ const CitaDetail = ({
                   <span className="font-bold">Autor:</span> {history.author}
                 </p>
                 <p className="text-gray-700 mb-2">
-                  <span className="font-bold">Cambios:</span>{' '}
-                  {JSON.stringify(history.changes)}
+                  <span className="font-bold">Cambios:</span>
                 </p>
+                <ul className="list-disc pl-4 mb-2">
+                  {Object.entries(history.changes).map(
+                    ([property, change]: any[], i) => (
+                      <li key={i}>
+                        <span className="font-bold">
+                          {EnumProperties[property]}:
+                        </span>{' '}
+                        {property == 'status'
+                          ? (
+                              {
+                                pending: 'PENDIENTE',
+                                finish: 'FINALIZADA',
+                                rejected: 'RECHAZADA'
+                              } as any
+                            )[change]
+                          : change || 'Sin asignación'}
+                      </li>
+                    )
+                  )}
+                </ul>
                 <p className="text-gray-700 mb-2">
                   <span className="font-bold">Formulario ID:</span>{' '}
                   {history.formId}
                 </p>
                 <p className="text-gray-700 mb-2">
                   <span className="font-bold">Creado el:</span>{' '}
-                  {formatDate(history.createdAt)}
+                  {GlobalFunctions.localDate(history.createdAt)}
                 </p>
                 <p className="text-gray-700">
                   <span className="font-bold">Actualizado el:</span>{' '}
-                  {formatDate(history.updatedAt)}
+                  {GlobalFunctions.localDate(history.updatedAt)}
                 </p>
               </div>
             ))}

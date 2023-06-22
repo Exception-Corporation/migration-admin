@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
@@ -11,6 +11,7 @@ import { Cita } from '@/domain/entities/cita/cita.entity';
 import useAuth from '@/presentation/hooks/useAuth';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
 const CitaForm = ({
   modalIsOpen,
@@ -18,7 +19,8 @@ const CitaForm = ({
   action,
   load,
   setLoad,
-  cita
+  cita,
+  owner
 }: {
   modalIsOpen: boolean;
   closeModal: () => void;
@@ -26,8 +28,15 @@ const CitaForm = ({
   load: number;
   setLoad: (n: number) => void;
   cita?: Cita;
+  owner?: boolean;
 }) => {
   const { auth } = useAuth();
+  const [origianlCita, setOrigianlCita] = useState<Cita | undefined>(cita);
+
+  useEffect(() => {
+    setOrigianlCita(cita);
+  }, [cita]);
+
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [startDate, setStartDate] = useState<Date | null>(
     cita?.startDate ? new Date(cita?.startDate) : null
@@ -93,6 +102,7 @@ const CitaForm = ({
           action == 'register'
             ? await CitaApi.create({
                 status,
+                userId: owner ? auth!.id : undefined,
                 name,
                 email,
                 phoneNumber,
@@ -104,15 +114,17 @@ const CitaForm = ({
             : await CitaApi.update(
                 {
                   id: cita!.id,
-                  confirm,
-                  status,
-                  name,
-                  email,
-                  phoneNumber,
-                  reason,
-                  startDate: startDate!.toISOString(),
-                  endDate: endDate!.toISOString(),
-                  type
+                  ...GlobalFunctions.getDiffProperties<any>(origianlCita, {
+                    confirm,
+                    status,
+                    name,
+                    email,
+                    phoneNumber,
+                    reason,
+                    startDate: startDate!.toISOString(),
+                    endDate: endDate!.toISOString(),
+                    type
+                  })
                 },
                 auth!.username
               );

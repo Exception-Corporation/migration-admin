@@ -52,6 +52,12 @@ const Content: NextPage = () => {
     if (n > 0 && n <= totalPages) setPage(n);
   };
 
+  const EnumType: any = {
+    pending: 'PENDIENTE',
+    finish: 'FINALIZADA',
+    rejected: 'RECHAZADA'
+  };
+
   const searching = (e: { target: { value: string } }) => {
     const st = e.target.value;
 
@@ -75,7 +81,10 @@ const Content: NextPage = () => {
           cita.name.toLowerCase().includes(st.toLowerCase()) ||
           cita.phoneNumber.toLowerCase().includes(st.toLowerCase()) ||
           cita.createdAt.toLowerCase().includes(st.toLowerCase()) ||
-          cita.updatedAt.toLowerCase().includes(st.toLowerCase())
+          cita.updatedAt.toLowerCase().includes(st.toLowerCase()) ||
+          EnumType[cita.status.toLowerCase()]
+            .toLowerCase()
+            .includes(st.toLowerCase())
       )
     );
   };
@@ -220,6 +229,7 @@ const Content: NextPage = () => {
         action="register"
         load={load}
         setLoad={setLoad}
+        owner={true}
       />
     </div>
   );

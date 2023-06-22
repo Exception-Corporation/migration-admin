@@ -118,7 +118,7 @@ export class CitaApi {
       type
     }: {
       id: number;
-      userId?: number;
+      userId?: number | null;
       confirm?: string;
       status?: StatusEnum;
       name?: string;

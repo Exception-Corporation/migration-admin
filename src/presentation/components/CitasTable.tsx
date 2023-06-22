@@ -7,6 +7,7 @@ import CitaUpdated from '@/presentation/components/modals/citas-form';
 import CitaDetail from '@/presentation/components/modals/cita-detail';
 import useAuth from '@/presentation/hooks/useAuth';
 import { HistoryCita } from '@/domain/entities/cita/history.cita.entity';
+import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
 export default function CitaTable({
   cita,
@@ -115,9 +116,50 @@ export default function CitaTable({
     });
   };
 
+  const remove = () => {
+    Swal.fire({
+      title: '¿Deseas desasignarte este registro?',
+      text: 'Este registro volverá a general, conservando todos los cambios actuales.',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Eliminar',
+      cancelButtonText: 'No, Cancelar'
+    }).then(async (result) => {
+      if (result.value) {
+        try {
+          let success: boolean = await CitaApi.update(
+            {
+              id: cita.id,
+              userId: null
+            },
+            auth!.username
+          );
+
+          if (!success) {
+            toast.error('Error inesperado, intente nuevamente.');
+            return;
+          }
+          Swal.fire(
+            'Desasignado!',
+            'Registro desasignado con éxito',
+            'success'
+          );
+          setLoad(load + 1);
+        } catch (error) {
+          toast.error('Error al desasignar el registro, intente más tarde');
+        }
+      }
+    });
+  };
+
   return (
     <tr>
-      <td className="border px-4 py-2 text-left">
+      <td
+        className="border px-4 py-2 text-left cursor-pointer"
+        onClick={openDetail}
+      >
         <div className="flex">
           <svg
             fill="none"
@@ -134,15 +176,27 @@ export default function CitaTable({
           {cita.type == 'demand' ? 'demanda' : cita.type}
         </div>
       </td>
-      <td className="border px-4 py-2">{cita.name}</td>
-      <td className="border px-4 py-2">{cita.email}</td>
-      <td className="border px-4 py-2">{cita.phoneNumber}</td>
-      <td className="border px-4 py-2">{cita.status}</td>
-      <td className="border px-4 py-2">
-        {new Date(cita.createdAt).toString()}
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {cita.name}
       </td>
-      <td className="border px-4 py-2">
-        {new Date(cita.updatedAt).toString()}
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {cita.email}
+      </td>
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {cita.phoneNumber}
+      </td>
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {
+          { pending: 'PENDIENTE', finish: 'FINALIZADA', rejected: 'RECHAZADA' }[
+            cita.status
+          ]
+        }
+      </td>
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {GlobalFunctions.localDate(cita.createdAt)}
+      </td>
+      <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
+        {GlobalFunctions.localDate(cita.updatedAt)}
       </td>
       <td className="border px-4 py-2">
         {auth!.role !== 'visitor' ? (
@@ -166,24 +220,44 @@ export default function CitaTable({
               </svg>
             </button>
             {owner ? (
-              <button
-                type="button"
-                className="mt-2 flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                onClick={openModal}
-              >
-                Actualizar
-                <svg
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 ml-2"
+              <>
+                <button
+                  type="button"
+                  className="mt-2 flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                  onClick={openModal}
                 >
-                  <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-              </button>
+                  Actualizar
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4 ml-2"
+                  >
+                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="mt-2 flex justify-center items-center bg-blue-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                  onClick={remove}
+                >
+                  Desasignar
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4 ml-2"
+                  >
+                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+              </>
             ) : (
               <button
                 type="button"
@@ -234,6 +308,7 @@ export default function CitaTable({
         load={load}
         setLoad={setLoad}
         cita={cita}
+        owner={owner}
       />
       <CitaDetail
         modalIsOpen={detailIsOpen}
