@@ -8,6 +8,7 @@ import CitaTable from '@/presentation/components/CitasTable';
 import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 import CitasCreate from '@/presentation/components/modals/citas-form';
 import useAuth from '@/presentation/hooks/useAuth';
+import { SocketIO } from '@/infrastructure/websocket';
 
 const Home: NextPage = () => {
   const { auth } = useAuth();
@@ -23,6 +24,8 @@ const Home: NextPage = () => {
   const [load, setLoad] = useState<number>(0);
 
   useEffect(() => {
+    SocketIO.on('message', receiveMessage);
+
     (async () => {
       try {
         const { forms, totalPages, totalCitas, totalDemands } =
@@ -38,7 +41,19 @@ const Home: NextPage = () => {
         toast.error(`Error interno: ${error.toString()}`);
       }
     })();
+
+    return () => {
+      SocketIO.off('message', receiveMessage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, load, size]);
+
+  const receiveMessage = (message: any) => {
+    toast.info(message.body.toString());
+    setLoad(load + 1);
+  };
+
+  const sendMessage = (message: string) => SocketIO.emit('message', message);
 
   const openModal = () => {
     setIsOpen(true);
@@ -216,6 +231,7 @@ const Home: NextPage = () => {
                   cita={cita}
                   load={load}
                   setLoad={setLoad}
+                  sendMessage={sendMessage}
                 />
               ))}
             </tbody>

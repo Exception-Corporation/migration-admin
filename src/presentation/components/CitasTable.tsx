@@ -14,12 +14,14 @@ export default function CitaTable({
   cita,
   load,
   setLoad,
-  owner
+  owner,
+  sendMessage
 }: {
   cita: Cita;
   load: number;
   setLoad: (n: number) => void;
   owner?: boolean;
+  sendMessage: (s: string) => void;
 }) {
   const { auth } = useAuth();
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
@@ -75,6 +77,7 @@ export default function CitaTable({
             return;
           }
           Swal.fire('Eliminado!', 'Registro eliminado con éxito', 'success');
+          sendMessage(`Registro con id: ${cita.id} eliminado`);
           setLoad(load + 1);
         } catch (error) {
           toast.error('Error al eliminar el registro, intente más tarde');
@@ -110,6 +113,9 @@ export default function CitaTable({
           }
 
           Swal.fire('Asiganda!', 'Registro asignado con éxito', 'success');
+          sendMessage(
+            `Registro con id: ${cita.id} asignado a: ${auth!.username}`
+          );
           setLoad(load + 1);
         } catch (error) {
           toast.error('Error al asignar el registro, intente más tarde');
@@ -126,7 +132,7 @@ export default function CitaTable({
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar',
+      confirmButtonText: 'Si, Desasignar',
       cancelButtonText: 'No, Cancelar'
     }).then(async (result) => {
       if (result.value) {
@@ -148,6 +154,7 @@ export default function CitaTable({
             'Registro desasignado con éxito',
             'success'
           );
+          sendMessage(`Registro con id: ${cita.id} desasignado`);
           setLoad(load + 1);
         } catch (error) {
           toast.error('Error al desasignar el registro, intente más tarde');
