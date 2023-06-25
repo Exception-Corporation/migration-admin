@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    profiles: ['app']
+    restart: always
+    container_name: migration-admin
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: 8000
+    ports:
+      - 8000:8000
+    logging:
+      driver: 'local'

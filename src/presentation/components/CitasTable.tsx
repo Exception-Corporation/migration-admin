@@ -10,6 +10,8 @@ import useAuth from '@/presentation/hooks/useAuth';
 import { HistoryCita } from '@/domain/entities/cita/history.cita.entity';
 import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
+declare const document: any;
+
 export default function CitaTable({
   cita,
   load,
@@ -28,6 +30,10 @@ export default function CitaTable({
   const [detailIsOpen, setDetailOpen] = useState<boolean>(false);
   const [history, setHistory] = useState<HistoryCita[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
+
+  // confirm date
+  const min = cita.startDate.slice(0, 16);
+  const max = cita.endDate.slice(0, 16);
 
   useEffect(() => {
     (async () => {
@@ -163,6 +169,53 @@ export default function CitaTable({
     });
   };
 
+  const confirmForm = () => {
+    Swal.fire({
+      title: 'Confirmar la cita',
+      icon: 'info',
+      html: `
+      <label for="datetimepicker" class="block mb-2 text-gray-700">
+        Seleccione una fecha y hora para confirmar la cita
+        (Se le hará llegar el aviso por correo a la persona).
+      </label>
+      <input 
+        id="datetimepicker" 
+        type="datetime-local" 
+        class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+      >
+    `,
+      showCancelButton: true,
+      didOpen: () => {
+        const input = document.getElementById('datetimepicker');
+        input.setAttribute('min', min);
+        input.setAttribute('max', max);
+      },
+      preConfirm: async () => {
+        const selectedDateTime =
+          document.getElementById('datetimepicker').value;
+
+        try {
+          let success: boolean = await CitaApi.update(
+            {
+              id: cita.id,
+              confirm: new Date(selectedDateTime).toISOString()
+            },
+            auth!.username
+          );
+
+          if (!success) {
+            toast.error('Error inesperado, intente nuevamente.');
+            return;
+          }
+          Swal.fire('Confirmada!', 'Cita confirmada con éxito', 'success');
+          setLoad(load + 1);
+        } catch (error) {
+          toast.error('Error al confirmar la cita, intente más tarde');
+        }
+      }
+    });
+  };
+
   return (
     <tr className="border-green-600	">
       <td
@@ -269,6 +322,26 @@ export default function CitaTable({
                           onClick={openModal}
                         >
                           <span className="mr-2">Actualizar</span>
+                          <svg
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            className="w-4 h-4"
+                          >
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                          </svg>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-yellow-700 hover:bg-blue-100"
+                          onClick={confirmForm}
+                        >
+                          <span className="mr-2">Confirmar</span>
                           <svg
                             fill="none"
                             stroke="currentColor"

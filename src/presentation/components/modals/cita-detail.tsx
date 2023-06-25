@@ -98,6 +98,14 @@ const CitaDetail = ({
                                 rejected: 'RECHAZADA'
                               } as any
                             )[change]
+                          : [
+                              'startDate',
+                              'endDate',
+                              'createdAt',
+                              'updatedAt',
+                              'confirm'
+                            ].includes(property)
+                          ? GlobalFunctions.localDate(change)
                           : change || 'Sin asignación'}
                       </li>
                     )
