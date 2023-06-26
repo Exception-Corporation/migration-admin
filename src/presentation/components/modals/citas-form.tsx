@@ -12,6 +12,7 @@ import useAuth from '@/presentation/hooks/useAuth';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
+import { Countries } from '@/infrastructure/utils/countries';
 
 const CitaForm = ({
   modalIsOpen,
@@ -75,17 +76,20 @@ const CitaForm = ({
       name: cita?.name || '',
       email: cita?.email || '',
       phoneNumber: cita?.phoneNumber || '',
-      type: cita?.type || 'cita'
+      type: cita?.type || 'cita',
+      country: cita?.country || 'México'
     },
     validationSchema: Yup.object({
       email: Yup.string()
         .email('El formato del email es incorrecto')
         .required('El email no puede ir vacio'),
       name: Yup.string().required('El nombre es obligatorio'),
-      phoneNumber: Yup.string().required('El teléfono es obligatorio')
+      phoneNumber: Yup.string().required('El teléfono es obligatorio'),
+      country: Yup.string().required('La Nacionalidad es obligatorio')
     }),
     onSubmit: async (values, { resetForm }) => {
-      const { confirm, status, name, email, phoneNumber, type }: any = values;
+      const { confirm, status, name, email, phoneNumber, type, country }: any =
+        values;
 
       if (!startDate || !endDate) {
         toast.error('El rango de fechas es obligatorio.');
@@ -109,7 +113,8 @@ const CitaForm = ({
                 reason,
                 startDate: startDate!.toISOString(),
                 endDate: endDate!.toISOString(),
-                type
+                type,
+                country
               })
             : await CitaApi.update(
                 {
@@ -123,7 +128,8 @@ const CitaForm = ({
                     reason,
                     startDate: startDate!.toISOString(),
                     endDate: endDate!.toISOString(),
-                    type
+                    type,
+                    country
                   })
                 },
                 auth!.username
@@ -249,6 +255,38 @@ const CitaForm = ({
               <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                 <p className="font-bold">Error</p>
                 <p>{formik.errors.phoneNumber}</p>
+              </div>
+            ) : null}
+
+            {/* COUNTRY */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="country"
+              >
+                Nacionalidad
+              </label>
+
+              <select
+                name="country"
+                id="country"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.country}
+                className="mt-2 appearance-none bg-blue-600 border border-blue-600 text-white p-2 text-center rounded leading-tight focus:outline-none focus:bg-blue-600 focus:border-blue-500 uppercase text-xs font-bold "
+              >
+                {Countries.map((nacionalidad) => (
+                  <option key={nacionalidad.id} value={nacionalidad.name}>
+                    {nacionalidad.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {formik.touched.country && formik.errors.country ? (
+              <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                <p className="font-bold">Error</p>
+                <p>{formik.errors.country}</p>
               </div>
             ) : null}
 

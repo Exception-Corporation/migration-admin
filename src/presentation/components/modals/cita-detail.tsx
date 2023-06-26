@@ -20,6 +20,7 @@ const CitaDetail = ({
     confirm: 'Confirmada',
     status: 'Estatus',
     name: 'Nombre',
+    country: 'Nacionalidad',
     email: 'Correo',
     phoneNumber: 'Teléfono',
     reason: 'Razón',
@@ -50,6 +51,10 @@ const CitaDetail = ({
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Motivo:</span> {cita.reason}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <span className="font-bold">Nacionalidad:</span>{' '}
+              {cita.country || 'Sin asignar'}
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Fecha de inicio:</span>{' '}

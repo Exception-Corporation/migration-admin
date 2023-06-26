@@ -37,7 +37,8 @@ export class CitaApi {
     reason,
     startDate,
     endDate,
-    type
+    type,
+    country
   }: {
     userId?: number;
     confirm?: string;
@@ -49,6 +50,7 @@ export class CitaApi {
     startDate: string;
     endDate: string;
     type: TypeEnum;
+    country?: string;
   }) {
     await this.request.loadAll(
       this.url + '/form/save',
@@ -64,7 +66,8 @@ export class CitaApi {
         reason,
         startDate,
         endDate,
-        type
+        type,
+        country
       }
     );
 
@@ -116,7 +119,8 @@ export class CitaApi {
       reason,
       startDate,
       endDate,
-      type
+      type,
+      country
     }: {
       id: number;
       userId?: number | null;
@@ -129,6 +133,7 @@ export class CitaApi {
       startDate?: string;
       endDate?: string;
       type?: TypeEnum;
+      country?: string;
     },
     author: string,
     token?: string
@@ -152,7 +157,8 @@ export class CitaApi {
         reason,
         startDate,
         endDate,
-        type
+        type,
+        country
       }
     );
 

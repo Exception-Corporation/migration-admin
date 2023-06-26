@@ -6,6 +6,7 @@ export class Cita {
     public id: number,
     public userId: number | null,
     public confirm: string | null,
+    public country: string | null,
     public status: StatusEnum,
     public name: string,
     public email: string,
