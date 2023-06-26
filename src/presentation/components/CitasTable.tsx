@@ -248,7 +248,7 @@ export default function CitaTable({
         {cita.phoneNumber}
       </td>
       <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
-        {cita.confirm
+        {cita.confirm && cita.status == 'pending'
           ? 'CONFIRMADA'
           : {
               pending: 'PENDIENTE',

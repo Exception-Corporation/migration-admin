@@ -4,12 +4,13 @@ import '../../styles/personal.scss';
 import '../../styles/emojis.scss';
 import './login/styles.scss';
 import './users/styles.scss';
+import { useEffect, useMemo, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
+import io from 'socket.io-client';
+import { toast } from 'react-toastify';
 import AuthContext from '@/infrastructure/reducer/context/auth.context';
-import 'react-toastify/dist/ReactToastify.css';
-import { useEffect, useMemo, useState } from 'react';
 import {
   decodeToken,
   getToken,
@@ -22,6 +23,16 @@ import Home from '@/pages';
 import Loading from '@/presentation/components/Loading';
 import RecoverPassword from '@/pages/recover-password';
 import SeoHead from '@/presentation/components/SeoHead';
+import config from '@/infrastructure/config';
+import 'react-toastify/dist/ReactToastify.css';
+
+const SocketIO = io(config.api.migration.url, {
+  transports: ['websocket']
+});
+
+SocketIO.on('connect_error', (err) => {
+  alert(err.toString());
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   // routing
@@ -30,7 +41,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [auth, setAuth] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [load, setLoad] = useState<number>(0);
+
   useEffect(() => {
+    SocketIO.on('message', receiveMessage);
+
     const token = getToken();
 
     const currentDate = new Date().getTime() / 1000;
@@ -49,7 +64,21 @@ function MyApp({ Component, pageProps }: AppProps) {
     } else {
       setAuth(null);
     }
-  }, []);
+
+    return () => {
+      SocketIO.off('message', receiveMessage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [load]);
+
+  const receiveMessage = (message: any) => {
+    toast.info(message.body.toString());
+    setLoad(load + 1);
+  };
+
+  const sendMessage = (message: string) => {
+    SocketIO.emit('message', message);
+  };
 
   const logout = () => {
     removeToken();
@@ -101,9 +130,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <NewAccount />
           )
         ) : verifyAuth(true) ? (
-          <Home {...pageProps} />
+          <Home {...({ ...pageProps, sendMessage } as any)} />
         ) : (
-          <Component {...pageProps} />
+          <Component {...({ ...pageProps, sendMessage } as any)} />
         )}
 
         <ToastContainer
