@@ -34,7 +34,7 @@ export class GlobalFunctions {
   }
 
   static localDate(fechaISO: string) {
-    const fecha = new Date(fechaISO);
+    const fecha = fechaISO ? new Date(fechaISO) : new Date();
     return format(fecha, 'dd MMMM yyyy HH:mm:ss', {});
   }
 }
