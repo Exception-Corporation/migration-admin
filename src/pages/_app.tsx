@@ -130,9 +130,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             <NewAccount />
           )
         ) : verifyAuth(true) ? (
-          <Home {...({ ...pageProps, sendMessage } as any)} />
+          <Home {...({ ...pageProps, sendMessage, autoload: load } as any)} />
         ) : (
-          <Component {...({ ...pageProps, sendMessage } as any)} />
+          <Component
+            {...({ ...pageProps, sendMessage, autoload: load } as any)}
+          />
         )}
 
         <ToastContainer

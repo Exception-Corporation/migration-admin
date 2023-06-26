@@ -9,7 +9,7 @@ import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 import CitasCreate from '@/presentation/components/modals/citas-form';
 import useAuth from '@/presentation/hooks/useAuth';
 
-const Content: NextPage = ({ sendMessage }: any) => {
+const Content: NextPage = ({ sendMessage, autoload }: any) => {
   const { auth } = useAuth();
 
   const [citas, setCitas] = useState<Array<Cita>>([]);
@@ -38,7 +38,7 @@ const Content: NextPage = ({ sendMessage }: any) => {
         toast.error(`Error interno: ${error.toString()}`);
       }
     })();
-  }, [page, load, size, auth]);
+  }, [page, load, size, auth, autoload]);
 
   const openModal = () => {
     setIsOpen(true);
