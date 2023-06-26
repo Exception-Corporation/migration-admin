@@ -82,7 +82,7 @@ const Content: NextPage = () => {
       return;
     }
 
-    setSize(100000);
+    setSize(1000000);
     setPage(1);
 
     setCitas(
@@ -98,7 +98,8 @@ const Content: NextPage = () => {
           cita.updatedAt.toLowerCase().includes(st.toLowerCase()) ||
           EnumType[cita.status.toLowerCase()]
             .toLowerCase()
-            .includes(st.toLowerCase())
+            .includes(st.toLowerCase()) ||
+          ('confirmada'.includes(st.toLowerCase()) && cita.confirm)
       )
     );
   };

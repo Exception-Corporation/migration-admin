@@ -6,6 +6,7 @@ import { getToken } from '@/infrastructure/utils/token';
 import { CitaResponse } from '@/data/use-cases/citas/types/response.type';
 import { StatusEnum, TypeEnum } from '@/domain/entities/cita/cita.entity';
 import { HistoryCita } from '@/domain/entities/cita/history.cita.entity';
+import { GlobalFunctions } from '@/infrastructure/utils/global.functions';
 
 export class CitaApi {
   private static request =
@@ -138,7 +139,8 @@ export class CitaApi {
       {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token ? token : getToken()}`,
-        author
+        author,
+        confirm: confirm ? GlobalFunctions.localDate(confirm) : ''
       },
       {
         userId,

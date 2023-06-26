@@ -217,7 +217,7 @@ export default function CitaTable({
   };
 
   return (
-    <tr className="border-green-600	">
+    <tr className="border-green-500	">
       <td
         className="border px-4 py-2 text-left cursor-pointer"
         onClick={openDetail}
@@ -248,11 +248,13 @@ export default function CitaTable({
         {cita.phoneNumber}
       </td>
       <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
-        {
-          { pending: 'PENDIENTE', finish: 'FINALIZADA', rejected: 'RECHAZADA' }[
-            cita.status
-          ]
-        }
+        {cita.confirm
+          ? 'CONFIRMADA'
+          : {
+              pending: 'PENDIENTE',
+              finish: 'FINALIZADA',
+              rejected: 'RECHAZADA'
+            }[cita.status]}
       </td>
       <td className="border px-4 py-2 cursor-pointer" onClick={openDetail}>
         {GlobalFunctions.localDate(cita.createdAt)}
@@ -313,55 +315,78 @@ export default function CitaTable({
                       </svg>
                     </button>
                   </li>
-                  {owner ? (
-                    <>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-green-600 hover:bg-green-100"
-                          onClick={openModal}
-                        >
-                          <span className="mr-2">Actualizar</span>
-                          <svg
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            className="w-4 h-4"
+                  {cita.status !== 'finish' ? (
+                    owner ? (
+                      <>
+                        <li>
+                          <button
+                            type="button"
+                            className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-green-600 hover:bg-green-100"
+                            onClick={openModal}
                           >
-                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                          </svg>
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-yellow-700 hover:bg-blue-100"
-                          onClick={confirmForm}
-                        >
-                          <span className="mr-2">Confirmar</span>
-                          <svg
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            className="w-4 h-4"
+                            <span className="mr-2">Actualizar</span>
+                            <svg
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              className="w-4 h-4"
+                            >
+                              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            type="button"
+                            className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-yellow-700 hover:bg-blue-100"
+                            onClick={confirmForm}
                           >
-                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                          </svg>
-                        </button>
-                      </li>
+                            <span className="mr-2">Confirmar</span>
+                            <svg
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              className="w-4 h-4"
+                            >
+                              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            type="button"
+                            className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
+                            onClick={remove}
+                          >
+                            <span className="mr-2">Desasignar</span>
+                            <svg
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              className="w-4 h-4"
+                            >
+                              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+                        </li>
+                      </>
+                    ) : (
                       <li>
                         <button
                           type="button"
                           className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
-                          onClick={remove}
+                          onClick={takeRecord}
                         >
-                          <span className="mr-2">Desasignar</span>
+                          <span className="mr-2">Tomar</span>
                           <svg
                             fill="none"
                             stroke="currentColor"
@@ -375,28 +400,9 @@ export default function CitaTable({
                           </svg>
                         </button>
                       </li>
-                    </>
+                    )
                   ) : (
-                    <li>
-                      <button
-                        type="button"
-                        className="flex items-center px-4 py-2 w-full text-xs uppercase font-bold text-blue-600 hover:bg-blue-100"
-                        onClick={takeRecord}
-                      >
-                        <span className="mr-2">Tomar</span>
-                        <svg
-                          fill="none"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          className="w-4 h-4"
-                        >
-                          <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                      </button>
-                    </li>
+                    <></>
                   )}
                 </>
               ) : (

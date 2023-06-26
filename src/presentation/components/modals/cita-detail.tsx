@@ -60,8 +60,17 @@ const CitaDetail = ({
               {GlobalFunctions.localDate(cita.endDate)}
             </p>
             <p className="text-gray-700 mb-2">
-              <span className="font-bold">Tipo:</span> {cita.type}
+              <span className="font-bold">Tipo:</span>{' '}
+              {cita.type == 'demand' ? 'demanda' : cita.type}
             </p>
+            {cita.confirm ? (
+              <p className="text-gray-700 mb-2">
+                <span className="font-bold">Fecha Confirmada:</span>{' '}
+                {GlobalFunctions.localDate(cita.confirm)}
+              </p>
+            ) : (
+              <></>
+            )}
             <p className="text-gray-700 mb-2">
               <span className="font-bold">Creado el:</span>{' '}
               {GlobalFunctions.localDate(cita.createdAt)}
