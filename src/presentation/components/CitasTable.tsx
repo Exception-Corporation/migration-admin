@@ -37,13 +37,14 @@ export default function CitaTable({
   const max = cita.endDate.slice(0, 16);
 
   useEffect(() => {
-    setColor(
-      {
-        pending: '',
-        rejected: '#ff000024',
-        finish: '#00ff0021'
-      }[cita.status]
-    );
+    let res = {
+      pending: '',
+      rejected: '#ff000024',
+      finish: '#00ff0021'
+    }[cita.status];
+
+    if (cita.confirm && cita.status == 'pending') res = '#ffff004a';
+    setColor(res);
     (async () => {
       try {
         const historyFound = await CitaApi.getHistoryById(cita.id);
