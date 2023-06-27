@@ -85,7 +85,9 @@ const Content: NextPage = ({ sendMessage, autoload }: any) => {
           EnumType[cita.status.toLowerCase()]
             .toLowerCase()
             .includes(st.toLowerCase()) ||
-          ('confirmada'.includes(st.toLowerCase()) && cita.confirm)
+          ('confirmada'.includes(st.toLowerCase()) &&
+            cita.confirm &&
+            cita.status == 'pending')
       )
     );
   };

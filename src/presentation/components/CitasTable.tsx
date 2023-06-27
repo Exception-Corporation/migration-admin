@@ -30,12 +30,20 @@ export default function CitaTable({
   const [detailIsOpen, setDetailOpen] = useState<boolean>(false);
   const [history, setHistory] = useState<HistoryCita[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
+  const [color, setColor] = useState<string>('');
 
   // confirm date
   const min = cita.startDate.slice(0, 16);
   const max = cita.endDate.slice(0, 16);
 
   useEffect(() => {
+    setColor(
+      {
+        pending: '#b2b2b252',
+        rejected: '#ff00003b',
+        finish: '#00ff003d'
+      }[cita.status]
+    );
     (async () => {
       try {
         const historyFound = await CitaApi.getHistoryById(cita.id);
@@ -217,7 +225,7 @@ export default function CitaTable({
   };
 
   return (
-    <tr className="border-green-500	">
+    <tr style={{ backgroundColor: color }}>
       <td
         className="border px-4 py-2 text-left cursor-pointer"
         onClick={openDetail}
