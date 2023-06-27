@@ -39,9 +39,9 @@ export default function CitaTable({
   useEffect(() => {
     setColor(
       {
-        pending: '#b2b2b252',
-        rejected: '#ff00003b',
-        finish: '#00ff003d'
+        pending: '',
+        rejected: '#ff000024',
+        finish: '#00ff0021'
       }[cita.status]
     );
     (async () => {
