@@ -60,8 +60,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     setWebSocket(socket);
 
-    if (webSocket)
-      webSocket.onmessage = async (event) => {
+    if (socket)
+      socket.onmessage = async (event) => {
         toast.info(await event.data.text());
         setLoad(load + 1);
       };
