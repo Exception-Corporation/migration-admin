@@ -8,7 +8,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
-import io from 'socket.io-client';
 import { toast } from 'react-toastify';
 import AuthContext from '@/infrastructure/reducer/context/auth.context';
 import {
@@ -26,17 +25,11 @@ import SeoHead from '@/presentation/components/SeoHead';
 import config from '@/infrastructure/config';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SocketIO = io(config.api.migration.url, {
-  transports: ['websocket']
-});
-
-SocketIO.on('connect_error', (err) => {
-  alert(err.toString());
-});
-
 function MyApp({ Component, pageProps }: AppProps) {
   // routing
   const router = useRouter();
+
+  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
   const [auth, setAuth] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,8 +37,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [load, setLoad] = useState<number>(0);
 
   useEffect(() => {
-    SocketIO.on('message', receiveMessage);
-
     const token = getToken();
 
     const currentDate = new Date().getTime() / 1000;
@@ -65,19 +56,26 @@ function MyApp({ Component, pageProps }: AppProps) {
       setAuth(null);
     }
 
+    const socket = new WebSocket(config.api.websocket.url);
+
+    setWebSocket(socket);
+
+    if (webSocket)
+      webSocket.onmessage = async (event) => {
+        toast.info(await event.data.text());
+        setLoad(load + 1);
+      };
+
     return () => {
-      SocketIO.off('message', receiveMessage);
+      socket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [load]);
 
-  const receiveMessage = (message: any) => {
-    toast.info(message.body.toString());
-    setLoad(load + 1);
-  };
-
   const sendMessage = (message: string) => {
-    SocketIO.emit('message', message);
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      webSocket.send(message);
+    }
   };
 
   const logout = () => {

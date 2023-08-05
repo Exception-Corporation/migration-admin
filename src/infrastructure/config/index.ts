@@ -8,6 +8,9 @@ const config = {
     },
     migration: {
       url: process.env.MIGRATION_API
+    },
+    websocket: {
+      url: process.env.WEBSOCKET_API
     }
   }
 };
